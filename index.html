@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>    
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gita Project</title>
+    <style>
+    
+th {
+    cursor: pointer;
+}   
+table button{
+    background-color: transparent;
+    border: transparent;
+    font-size: 20px;
+}
+    </style>
+</head>
+<body class="bg-light"> 
+    <script>
+    let cnt = 0;
+const maxNum = 3;
+const url = "https://www.balldontlie.io/api/v1/players"
+    var players = []
+    var playersClone = [] 
+    var sortD = false
+    window.onload = async () => {
+        const response = await fetch(url)
+            .then(data => data.json())
+            .then(data => {console.log(data.data);players = data.data;playersClone = data.data;})
+            getData(players); 
+
+    }
+    
+         function getData(pl){
+            if (cnt >= maxNum) return;
+            var tableBody = document.getElementById('test')
+            let dataHtml = ''
+            /*  for(let i of pl)*/
+                for(let i = 0; i<pl.length; i++){
+                        dataHtml += '<tr>'+
+                         "<td id = 'id'>" + pl[i].id + "</td>" + 
+                        "<td>" + pl[i].first_name + "</td>" + 
+                        "<td>" + pl[i].last_name + "</td>" + 
+                        "<td>"+pl[i].position+"</td>"+
+                        "<td>"+pl[i].team.abbreviation+"</td>"+
+                        '</tr>';  
+                } 
+        
+            tableBody.innerHTML = dataHtml
+        }
+        
+    sortField = 'none';
+    sortOrder = 0;
+    function sortCol(colName){
+        const dataType = typeof players[0][colName]
+        sortD = !sortD
+        switch(dataType){
+            case  'number':
+            sort(sortD,colName);
+            break;
+            case 'string':
+            sort(sortD,colName);
+            break;
+        }
+        getData(players)
+    }
+    var sortOrder = 0;
+    function sort(sort, colName){
+        if(sortField == colName && sortOrder !=0){
+            sortOrder = sortOrder * (-1);
+        }else{
+            sortOrder = 1;
+        }
+        sortField = colName
+        players = players.sort((a,b)=>{
+            return sortOrder * ((a)[sortField] > (b)[sortField] ?
+        1: (a)[sortField] < (b)[sortField]?-1:0)
+        })
+    }
+    function search(){
+        input = document.getElementById("myInput").value;
+        if(input.length > 0){
+            if(players.find((el) => el.id == input) != undefined){
+                players = players.filter((el) => el.id == input)
+                console.log(players)
+                getData(players)
+            }else{
+                alert(`Player with id:${input} doesn't exist`)
+            }
+        }
+    }
+    function refresh(){
+        document.getElementById("myInput").value = '';
+        input = document.getElementById("myInput").value;
+        players = playersClone.filter((el) => el.id != input)
+        getData(players)
+        console.log(players)
+    }
+
+    </script>
+    
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+          
+            <a class="navbar-brand" href="https://www.nba.com/" style="margin-left: 20px;"><img style="width: 20%;" src="./imgs/images.png" alt=""></a>
+            
+          
+          <a class="navbar-brand" href="#" style="margin-left: 20px;"></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item active">
+                <a class="nav-link" href="./index.html">Players Table</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./home.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./quiz.html">Quiz</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./login.html">Login</a>
+              </li>
+              
+            </ul>
+          </div>
+        
+        </nav>
+      </div>
+    <div class="container mt-4 ">
+        <div class="input-group mb-1">
+            <input type="search" id="myInput" class="form-control rounded" placeholder="Search Id" aria-label="Search" aria-describedby="search-addon" />
+            
+            <button type="button" onclick="search()" class="btn btn-outline-primary">search</button>
+            
+        </div>
+        <div class="bg-dark p-1">
+            <h1 class="d-flex justify-content-center text-white">NBA Players</h1>
+            <button 
+            style="float:right;margin-top:-40px;
+            background-color: transparent;
+            border: transparent;
+            font-size: 20px;
+            color:white;"
+            onclick="refresh()"
+            class="d-flex align-text-center">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover bg-white" id="data">
+                <thead>
+                  <tr>
+                    <th scope="col" >ID <button onclick="sortCol('id')">↕</button></th>
+                    <th scope="col" onclick="sortCol('first_name')">Name <button onclick="sortCol('first_name')">↕</button></th>
+                    <th scope="col" onclick="sortCol('last_name')">LastName <button onclick="sortCol('last_name')">↕</button></th>
+                    <th scope="col" onclick="sortCol('position')">Position <button onclick="sortCol('position')">↕</button></th>
+                    <th scope="col" >Team</th>
+                  </tr>
+                </thead>
+                <tbody id="test">
+                </tbody>
+              </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
